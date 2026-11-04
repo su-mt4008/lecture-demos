@@ -138,8 +138,8 @@ share bitcoin ever had. The third sign is **not** there: the NASDAQ is 1.6 times
 years ago, an ordinary pace (higher than only 40% of months), far from 5.9 times in 2000.
 
 What the data **cannot** say is whether this is a bubble. High valuations can last for years, and
-if AI raises earnings as much as the market expects, today's prices may turn out reasonable. The
-honest answer: *two of the three signs that preceded earlier crashes are present; whether a
+if AI raises earnings as much as the market expects, today's prices may turn out reasonable. In
+short: *two of the three signs that preceded earlier crashes are present; whether a
 crash follows is not in the data.*
 
 Limitations:

@@ -32,7 +32,7 @@ print(shiller.shape, nasdaq.shape, hn.shape)
 
     (1871, 22) (14542, 2) (236, 8)
 
-    /var/folders/c0/ljsmh_md1wqc7ry8qt6jnhv80000gn/T/ipykernel_29810/2435351509.py:1: Pandas4Warning: The xlrd engine is deprecated and will be removed in a future version. Use the calamine engine instead, by setting engine='calamine'.
+    /var/folders/c0/ljsmh_md1wqc7ry8qt6jnhv80000gn/T/ipykernel_46077/2435351509.py:1: Pandas4Warning: The xlrd engine is deprecated and will be removed in a future version. Use the calamine engine instead, by setting engine='calamine'.
       shiller = pd.read_excel("data/shiller-ie_data.xls", sheet_name="Data", header=None, skiprows=8)
 
 - **Shiller** (shillerdata.com): monthly S&P composite prices, earnings
@@ -162,9 +162,9 @@ than only 40% of months), far from 5.9 times in 2000.
 
 What the data **cannot** say is whether this is a bubble. High
 valuations can last for years, and if AI raises earnings as much as the
-market expects, today’s prices may turn out reasonable. The honest
-answer: *two of the three signs that preceded earlier crashes are
-present; whether a crash follows is not in the data.*
+market expects, today’s prices may turn out reasonable. In short: *two
+of the three signs that preceded earlier crashes are present; whether a
+crash follows is not in the data.*
 
 Limitations:
 
