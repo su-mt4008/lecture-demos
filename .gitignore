@@ -3,3 +3,9 @@
 .ipynb_checkpoints
 
 uv.lock
+
+# introduction/: the lockfile is part of the project; environments and caches are not.
+!introduction/uv.lock
+.venv/
+.quarto/
+__pycache__/

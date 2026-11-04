@@ -1,0 +1,12 @@
+# Renders all three reports with one command: uv run quarto render
+project:
+  type: default
+  render:
+    - names/report.qmd
+    - electricity/report.qmd
+    - ai-bubble/report.qmd
+
+format: gfm
+
+execute:
+  echo: true
