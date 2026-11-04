@@ -1,0 +1,17 @@
+[project]
+name = "introduction-projects"
+version = "0.1.0"
+description = "MT4008 introduction lecture: three example projects"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "requests",
+    "xlrd",
+    "ipykernel",
+    "nbclient",
+    "nbformat",
+    "pyyaml",
+    "tabulate",
+]

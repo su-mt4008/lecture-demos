@@ -1,0 +1,121 @@
+---
+title: "Are baby names a fashion?"
+author: "MT4008 introduction lecture"
+jupyter: python3
+---
+
+```{python}
+#| include: false
+import pandas as pd
+import matplotlib.pyplot as plt
+from IPython.display import Markdown
+
+plt.rcParams.update({"axes.spines.top": False, "axes.spines.right": False})
+```
+
+## Question
+
+Do first names behave like fashion: do they rise, fall, and come back? A common claim is that
+names skip about three generations: the names of great-grandparents return once nobody's parents
+have them. If that is true, names popular around 1925, rare around 1970 and popular again
+around 2015 should be easy to find.
+
+## Data
+
+```{python}
+raw = pd.read_csv("data/scb-names-by-birth-year.csv", encoding="latin-1")
+raw.shape
+```
+
+Statistics Sweden (SCB), table BE0001T100: for the 100 most common first names among women
+and the 100 most common among men in Sweden on 31 December 2021, the number of people with that
+name born in each year 1922–2021. Downloaded with `fetch.py`.
+
+What it **cannot** tell us: these are people *alive and registered in Sweden in 2021*. Someone
+born in 1925 who died or emigrated is not counted, and someone who immigrated is. So the counts
+for early birth years are thinned out, and the list only contains names that are common *today*.
+A name that was popular in 1925 and never came back may be missing altogether.
+
+## Cleaning
+
+The table is wide: one row per name, one column per birth year. We make it long (one row per
+name and year), turn the column names into years, and treat SCB's missing values (fewer than ten
+people) as missing, not zero.
+
+```{python}
+names = raw.rename(columns={raw.columns[0]: "name"})
+long = names.melt(id_vars="name", var_name="year", value_name="people")
+long["year"] = long["year"].str[-4:].astype(int)
+long["people"] = pd.to_numeric(long["people"], errors="coerce")
+print(f"{long['name'].nunique()} names, years {long['year'].min()}–{long['year'].max()}, "
+      f"{long['people'].isna().sum()} name-years with fewer than 10 people")
+```
+
+Birth cohorts differ in size, and older cohorts are thinned out, so raw counts are not
+comparable across years. We compare each name's **share** of the people born that year who have
+one of these 200 names.
+
+```{python}
+long["share"] = long["people"] / long.groupby("year")["people"].transform("sum")
+share = long.pivot(index="year", columns="name", values="share").fillna(0)
+```
+
+## Exploration
+
+```{python}
+#| label: fig-comebacks
+#| fig-cap: "Share of each birth year, for six names that came back."
+comeback = ["Elsa", "Alice", "Astrid", "Ebba", "Agnes", "Axel"]
+ax = (share[comeback] * 100).plot(figsize=(8, 4), lw=2)
+ax.set_xlabel("Year of birth")
+ax.set_ylabel("% of the 200 names")
+ax.legend(frameon=False, ncols=3)
+plt.show()
+```
+
+## Analysis
+
+We call a name a **comeback** when it was common in 1922–1935, rare in 1960–1980 and common
+again in 2005–2021. As a number: how many times more common it was in each of the two popular
+periods than in the dip, and we keep the smaller of the two.
+
+```{python}
+period = lambda a, b: share.loc[a:b].mean()
+early, dip, late = period(1922, 1935), period(1960, 1980), period(2005, 2021)
+floor = 1e-4  # a name absent in the dip counts as 0.01 %, so we never divide by zero
+score = pd.concat([early / dip.clip(lower=floor), late / dip.clip(lower=floor)], axis=1).min(axis=1)
+top = score.sort_values(ascending=False).head(10)
+Markdown(pd.DataFrame({"comeback score": top.round(1)}).to_markdown())
+```
+
+```{python}
+#| label: fig-diversity
+#| fig-cap: "How much of each birth year the ten most common names cover."
+top10 = share.apply(lambda year: year.nlargest(10).sum(), axis=1)
+ax = (top10 * 100).plot(figsize=(8, 3), color="black", lw=2)
+ax.set_xlabel("Year of birth")
+ax.set_ylabel("% in the top 10")
+plt.show()
+```
+
+## Conclusions & limitations
+
+Yes, names behave like fashion. Several of today's most common girls' and boys' names (Elsa,
+Alice, Astrid, Ebba, Agnes, Axel) were common in the 1920s, almost disappeared around 1970 and
+returned after 2000: roughly the three-generation gap of the claim.
+
+Limitations:
+
+- **Survivorship.** The data counts people alive in 2021. Early cohorts are thinned out, and
+  names that never came back are missing from the list, so the data *favours* finding comebacks.
+- The score depends on the periods we chose. Different cut-offs give a different top ten.
+- Shares are within these 200 names, not within all births.
+- This describes a pattern; it does not explain why names come back.
+
+## How to reproduce
+
+```
+uv sync
+uv run names/fetch.py      # optional: downloads the data again
+uv run quarto render names/report.qmd
+```

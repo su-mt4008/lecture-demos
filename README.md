@@ -1,6 +1,9 @@
-# Lecture Demos
+# Lecture demos
 
-In this repository, you will find the code for the demos presented during
-monday sessions. If anything is unclear, please raise an issue in this repo!
+Example code for MT4008 Statistical Data Processing, Stockholm University.
 
-To reproduce the experiments run on this repo. Clone the repository and and run pip install 
+- **[introduction/](introduction/)**: the three example projects from the first session
+  (HT2026), each a complete, reproducible report.
+- `week1/` … `week5/`: demos from HT2025.
+
+If anything is unclear, ask in a session or on Moodle.
