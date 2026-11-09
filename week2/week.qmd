@@ -1,0 +1,48 @@
+---
+title: Week 2
+format: gfm
+author: Taariq Nazar
+---
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt 
+import numpy as np
+
+raw = pd.read_csv("election-2018-municipalities.csv", sep=";", decimal=",", encoding="utf-8-sig")
+
+raw.shape
+raw.dtypes
+```
+
+```{python}
+raw.dtypes
+```
+
+```{python}
+raw.head()
+```
+
+```{python}
+votes = (
+  raw.rename(columns={
+    "LÄNSNAMN": "county", "KOMMUNNAMN": "municipality",
+    "RÖSTANDE": "voters", "RÖSTBERÄTTIGADE": "electorate",
+    "VALDELTAGANDE": "turnout"
+  })[["county", "municipality", "voters", "electorate", "turnout"]]
+  .assign(county=lambda d: d["county"].str.removesuffix("s län"))
+)
+
+votes.tail()
+```
+
+```{python}
+votes: pd.DataFrame = votes.assign(check = 100* votes["voters"]/votes["electorate"])
+(votes["check"] - votes["turnout"]).abs().max()
+```
+
+```{python}
+votes.sort_values("turnout").head(5)
+```
+
+
