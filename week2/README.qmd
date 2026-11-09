@@ -1,0 +1,60 @@
+---
+title: Week 2
+format: gfm
+---
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot
+```
+
+```{python}
+raw = pd.read_csv("election-2018-municipalities.csv", sep=";", decimal=",", encoding="utf-8-sig")
+raw.head(5)
+```
+
+```{python}
+raw.shape
+```
+
+```{python}
+raw.dtypes
+```
+
+```{python}
+raw[["LÄNSNAMN", "KOMMUNNAMN"]]
+```
+
+
+```{python}
+votes = (
+    raw.rename(columns={
+        "LÄNSNAMN": "county", "KOMMUNNAMN": "municipality",
+        "RÖSTANDE": "voters", "RÖSTBERÄTTIGADE": "electorate",
+        "VALDELTAGANDE": "turnout",
+    })[["county", "municipality", "electorate", "voters", "turnout"]]
+    .assign(county=lambda d: d["county"].str.removesuffix("s län") )
+)
+
+votes.head(5)
+```
+
+```{python}
+# Check validity
+(votes["turnout"] - 100*(votes["voters"]/votes["electorate"])).abs().max()
+```
+
+```{python}
+votes.sort_values("turnout").head(3)
+```
+
+```{python}
+by_county = (
+    votes.groupby("county")["turnout"]
+    .agg(n="size", mean="mean", median="median", sd="std")
+    .sort_values("mean")
+)
+
+by_county
+```
